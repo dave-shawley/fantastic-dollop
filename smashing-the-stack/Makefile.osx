@@ -1,0 +1,16 @@
+CFLAGS += -O0 -fverbose-asm -fno-inline-functions -fno-builtin -fno-reroll-loops
+CFLAGS += -fno-stack-protector -fno-threadsafe-statics -fno-unroll-loops
+CFLAGS += -Wno-main-return-type -m32 -march=i386
+LDFLAGS += -m32 -march=i386
+DISFLAGS += -disassemble -mcpu=i386 -macho -x86-asm-syntax=att -line-numbers -source -s
+
+PROGRAMS := example1
+
+%: %.c
+	$(CC) $(CFLAGS) -g $< -o $@ $(LDFLAGS)
+	objdump $(DISFLAGS) $@ > $*.s
+
+all: $(PROGRAMS)
+
+clean:
+	- rm -f *.s $(PROGRAMS)

@@ -1,0 +1,5 @@
+example1
+*.s
+*.S
+*.dSYM
+core
