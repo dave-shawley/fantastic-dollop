@@ -4,7 +4,7 @@ CFLAGS += -Wno-main-return-type -m32 -march=i386
 LDFLAGS += -m32 -march=i386
 DISFLAGS += -disassemble -mcpu=i386 -macho -x86-asm-syntax=att -line-numbers -source -s
 
-PROGRAMS := example1 example2
+PROGRAMS := example1 example2 example3
 
 %: %.c
 	$(CC) $(CFLAGS) -g $< -o $@ $(LDFLAGS)
