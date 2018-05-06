@@ -1,7 +1,9 @@
 example1
 example2
 example3
+exit
 shellcode
+shellcodeasm
 *.s
 *.S
 *.dSYM

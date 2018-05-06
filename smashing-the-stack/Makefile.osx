@@ -4,7 +4,7 @@ CFLAGS += -Wno-main-return-type -m32 -march=i386
 LDFLAGS += -m32 -march=i386
 DISFLAGS += -disassemble -mcpu=i386 -macho -x86-asm-syntax=att -line-numbers -source -s
 
-PROGRAMS := example1 example2 example3 shellcode
+PROGRAMS := example1 example2 example3 exit shellcode shellcodeasm
 
 %: %.c
 	$(CC) $(CFLAGS) -g $< -o $@ $(LDFLAGS)
@@ -15,5 +15,11 @@ all: $(PROGRAMS)
 clean:
 	- rm -f *.s $(PROGRAMS)
 
+exit: exit.c
+	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
+
 shellcode: shellcode.c
+	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
+
+shellcodeasm: shellcodeasm.c
 	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)

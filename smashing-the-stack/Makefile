@@ -1,8 +1,8 @@
-CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm
+CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm -march=i386
 LDFLAGS += 
 DISFLAGS += --source --section=.text
 
-PROGRAMS := example1 example2 example3 shellcode
+PROGRAMS := example1 example2 example3 exit shellcode shellcodeasm
 
 %: %.c
 	$(CC) $(CFLAGS) -ggdb -S $< -o $*.s
@@ -14,6 +14,14 @@ all: $(PROGRAMS)
 clean:
 	- rm -f *.s *.S $(PROGRAMS)
 
-shellcode: shellcode.c
+exit: exit.c
 	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
+	objdump --disassemble $(DISFLAGS) $@ > $@.S
+
+shellcode: shellcode.c
+	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
+	objdump --disassemble $(DISFLAGS) $@ > $@.S
+
+shellcodeasm: shellcodeasm.c
+	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
 	objdump --disassemble $(DISFLAGS) $@ > $@.S
