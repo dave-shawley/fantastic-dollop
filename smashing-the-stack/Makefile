@@ -2,7 +2,7 @@ CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm
 LDFLAGS += 
 DISFLAGS += --source --section=.text
 
-PROGRAMS := example1
+PROGRAMS := example1 example2
 
 %: %.c
 	$(CC) $(CFLAGS) -ggdb -S $< -o $*.s
