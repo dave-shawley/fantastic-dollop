@@ -2,7 +2,7 @@ CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm -march=i386
 LDFLAGS += 
 DISFLAGS += --source --section=.text
 
-PROGRAMS := example1 example2 example3 exit shellcode shellcodeasm
+PROGRAMS := example1 example2 example3 exit shellcode shellcodeasm testsc
 
 %: %.c
 	$(CC) $(CFLAGS) -ggdb -S $< -o $*.s
@@ -24,4 +24,9 @@ shellcode: shellcode.c
 
 shellcodeasm: shellcodeasm.c
 	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
+	objdump --disassemble $(DISFLAGS) $@ > $@.S
+
+testsc: testsc.c
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	execstack -s $@
 	objdump --disassemble $(DISFLAGS) $@ > $@.S

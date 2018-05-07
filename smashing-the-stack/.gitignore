@@ -4,6 +4,7 @@ example3
 exit
 shellcode
 shellcodeasm
+testsc
 *.s
 *.S
 *.dSYM
