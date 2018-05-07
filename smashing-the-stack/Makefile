@@ -2,7 +2,7 @@ CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm -march=i386
 LDFLAGS += 
 DISFLAGS += --source --section=.text
 
-PROGRAMS := example1 example2 example3 exit shellcode shellcodeasm shellcodeasm2 testsc testsc2
+PROGRAMS := example1 example2 example3 exit overflow1 shellcode shellcodeasm shellcodeasm2 testsc testsc2
 
 %: %.c
 	$(CC) $(CFLAGS) -ggdb -S $< -o $*.s
@@ -16,6 +16,11 @@ clean:
 
 exit: exit.c
 	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
+	objdump --disassemble $(DISFLAGS) $@ > $@.S
+
+overflow1: overflow1.c
+	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
+	execstack -s $@
 	objdump --disassemble $(DISFLAGS) $@ > $@.S
 
 shellcode: shellcode.c
