@@ -1,46 +1,20 @@
-CFLAGS += -O0 -fno-stack-protector -m32 -fverbose-asm -march=i386
-LDFLAGS += 
-DISFLAGS += --source --section=.text
-
-PROGRAMS := example1 example2 example3 exit overflow1 shellcode shellcodeasm shellcodeasm2 testsc testsc2
+CFLAGS		+= -O0 -fno-stack-protector -m32 -fverbose-asm -march=i386
+LDFLAGS		+= 
+DISFLAGS	+= --source --section=.text
+SOURCES		:= $(wildcard *.c)
+PROGRAMS	:= $(patsubst %.c,%,$(SOURCES))
 
 %: %.c
-	$(CC) $(CFLAGS) -ggdb -S $< -o $*.s
+	$(CC) $(CFLAGS) -S $< -o $*.s
 	$(CC) $*.s -o $@ $(LDFLAGS)
 	objdump --disassemble $(DISFLAGS) $@ > $*.S
+	execstack -s $@
 
 all: $(PROGRAMS)
 
 clean:
-	- rm -f *.s *.S $(PROGRAMS)
+	- find . -executable -type f -delete
+	- rm -f *.s *.S core
 
-exit: exit.c
-	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-overflow1: overflow1.c
-	$(CC) $(CFLAGS) -static $< -o $@ $(LDFLAGS)
-	execstack -s $@
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-shellcode: shellcode.c
-	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-shellcodeasm: shellcodeasm.c
-	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-shellcodeasm2: shellcodeasm2.c
-	$(CC) $(CFLAGS) -ggdb -static $< -o $@ $(LDFLAGS)
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-testsc: testsc.c
-	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
-	execstack -s $@
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
-
-testsc2: testsc2.c
-	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
-	execstack -s $@
-	objdump --disassemble $(DISFLAGS) $@ > $@.S
+example1 example2 example3 shellcode shellcodeasm2: CFLAGS += -ggdb
+exit overflow1 shellcode shellcodeasm shellcodeasm2: CFLAGS += -static
